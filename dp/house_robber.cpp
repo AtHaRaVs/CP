@@ -69,3 +69,35 @@ public:
         return dp[n];
     }
 };
+
+// constant space
+class Solution
+{
+public:
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
+
+        if (n == 1)
+            return nums[0];
+
+        vector<int> dp(n + 1, 0);
+
+        int prevPrev = 0;
+        int prev = nums[0];
+
+        for (int i = 2; i <= n; i++)
+        {
+
+            int skip = prev;
+            int steal = nums[i - 1] + prevPrev;
+
+            dp[i] = max(skip, steal);
+
+            prevPrev = prev;
+            prev = dp[i];
+        }
+
+        return dp[n];
+    }
+};
