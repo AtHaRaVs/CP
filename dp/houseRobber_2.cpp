@@ -79,3 +79,45 @@ public:
         return max(result1, result2);
     }
 };
+
+// constant space
+
+class Solution
+{
+public:
+    int solve(int l, int r, vector<int> &nums)
+    {
+        int prev = 0;
+        int prevPrev = 0;
+
+        for (int i = l; i <= r; i++)
+        {
+
+            int skip = prev;
+            int steal = nums[i] + prevPrev;
+
+            int temp = max(steal, skip);
+
+            prevPrev = prev;
+            prev = temp;
+        }
+
+        return prev;
+    }
+
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
+
+        if (n == 1)
+            return nums[0];
+
+        if (n == 2)
+            return max(nums[0], nums[1]);
+
+        int firstHouse = solve(0, n - 2, nums);
+        int secondHouse = solve(1, n - 1, nums);
+
+        return max(firstHouse, secondHouse);
+    }
+};
