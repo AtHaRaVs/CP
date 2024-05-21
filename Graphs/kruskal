@@ -1,0 +1,84 @@
+// Problem link: https://www.naukri.com/code360/problems/prim-s-mst_1095633?leftPanelTabValue=PROBLEM
+// DSU used
+
+#include <bits/stdc++.h> 
+
+int find(int x, vector<int>& parent){
+
+    if(x==parent[x]) return x;
+
+    return parent[x] = find(parent[x],parent);
+    
+}
+
+void Union(int x, int y, vector<int>& rank, vector<int>& parent){
+
+    int parent_x = find(x,parent);
+    int parent_y = find(y,parent);
+
+    if(parent_x == parent_y) return;
+
+    if(rank[parent_y] > rank[parent_x]){
+        parent[parent_x] = parent_y;
+    }else if(rank[parent_y] < rank[parent_x]){
+        parent[parent_y] = parent_x;
+    }else{
+        parent[parent_x] = parent_y;
+        rank[parent_y]++;
+    }
+    
+}
+
+vector<pair<pair<int, int>, int>> kruskal(priority_queue<pair<int ,pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> &pq, int n){
+
+    vector<pair<pair<int, int>, int>> result;
+    vector<int> parent(n + 1);
+    vector<int> rank(n + 1, 0);
+
+    for(int i=0;i<=n;i++){
+
+        parent[i] = i;
+        
+    }
+
+    while(!pq.empty()){
+
+        auto p = pq.top();
+        pq.pop();
+
+        int w = p.first;
+        int u = p.second.first;
+        int v = p.second.second;
+
+        int parent_u = find(u,parent);
+        int parent_v = find(v,parent);
+
+        if(parent[u]!=parent[v]){
+
+            Union(u,v,rank,parent);
+            result.push_back({{u, v}, w});
+        }
+        
+    }
+
+    return result;
+    
+}
+
+vector<pair<pair<int, int>, int>> calculatePrimsMST(int n, int m, vector<pair<pair<int, int>, int>> &g)
+{
+    // Write your code here.
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+    for(auto &i: g){
+
+        int u = i.first.first;
+        int v = i.first.second;
+        int w = i.second;
+
+        pq.push({w,{u,v}});
+     
+    }
+
+    return kruskal(pq,n);
+
+}
